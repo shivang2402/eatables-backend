@@ -16,7 +16,7 @@ const {displaymenuItem} =require('../model/item.model');
 const postinsert= async function (req,res)
 {
     let info = req.body;
-    const {name, data} = req.files.pic;
+    const {name, data} = req.files.files;
     let bool
     await insertItem(info.itemId, info.itemName,info.category,info.itemDescription, info.itemPrice,info.availStatus,name,data).then((_)=>bool=_);
     console.log(bool);
