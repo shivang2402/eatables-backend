@@ -1,0 +1,58 @@
+#POST http://localhost:80/api/item
+#Content-Type: application/x-www-form-urlencoded
+#
+#id=99&content=new-element
+
+###
+
+POST http://localhost:3000/login/
+Content-Type: application/x-www-form-urlencoded
+
+email=rjo&password=123344&id=2&name=kok
+###
+
+POST http://localhost:3000/login/
+Content-Type: application/json
+
+{
+  "email":"namanrajani16@gmail.com",
+  "password":"12345678900"
+}
+
+###
+POST http://localhost:3000/register/
+Content-Type: application/x-www-form-urlencoded
+
+name=artCR&email=naman@gmail.comCR&password=1234CR
+###
+POST http://localhost:3000/otp/validate
+Content-Type: application/x-www-form-urlencoded
+
+otp=6989
+###
+POST http://localhost:3000/register/
+Content-Type: application/json
+
+{
+  "name":"artCR",
+  "email":"namanrajani16@gmail.com",
+  "password":"12345678900",
+  "number": "9876543210"
+}
+###
+POST http://localhost:3000/otp/validate
+Content-Type: application/json
+
+{
+"otp":6196
+}
+
+###
+
+POST http://localhost:3000/razorpay/orderId
+Content-Type: application/json
+
+{
+  "amount":6196,
+  "student_id":"1674581724570"
+}
