@@ -30,8 +30,8 @@ let ans = [];
 
 db.all(selectQuery, (err, rows) => {
     if (err) return;
-    console.log(rows);
-    ans.push(rows);
+    console.log(rows[0].ITEM_IMAGE);
+    // ans.push(rows);
 })
 
 // app.get('/index', (req, res) => {
