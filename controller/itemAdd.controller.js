@@ -20,11 +20,8 @@ const postinsert= async function (req,res)
     let bool
     await insertItem(info.itemId, info.itemName,info.category,info.itemDescription, info.itemPrice,info.availStatus,name,data).then((_)=>bool=_);
     console.log(bool);
-<<<<<<< HEAD
     console.log("naman")
-=======
     console.log("shivvv")
->>>>>>> 7668209feaf94f4e35d0c2688f84df9a8bd9a430
     res.send(bool);
 
 }

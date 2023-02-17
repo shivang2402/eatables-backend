@@ -24,24 +24,16 @@ app.use(express.urlencoded({extended:false}));
 app.use(fileUpload(undefined));
 
 //for testing purpose
-<<<<<<< HEAD
+// <<<<<<< HEAD
 let db = new sqlite3.Database('./USERS');
 let selectQuery = 'SELECT * FROM MENUITEM ;';
-=======
-let db = new sqlite3.Database('./menuItem');
-let selectQuery = 'SELECT * FROM menuItem ;';
->>>>>>> 7668209feaf94f4e35d0c2688f84df9a8bd9a430
+
 let ans = [];
 
 db.all(selectQuery, (err, rows) => {
     if (err) return;
-<<<<<<< HEAD
     console.log(rows[0].ITEM_IMAGE);
     // ans.push(rows);
-=======
-    console.log(rows);
-    ans.push(rows);
->>>>>>> 7668209feaf94f4e35d0c2688f84df9a8bd9a430
 })
 
 // app.get('/index', (req, res) => {
