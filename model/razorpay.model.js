@@ -29,7 +29,7 @@ const insertRazorpay=async function (id, date, currency, amount, razorpay_status
         driver: sqlite3.Database
     })
 
-    await db.run("INSERT INTO PAYMENTGATEWAY (BILL_NO, DATE, CURRENCY, AMOUNT, RAZORPAY_STATUS,USER_STATUS, TOKEN,STUDENT_ID) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)", [id, date, currency, amount / 100, razorpay_status, user_status, receiptNo,STUDENT_ID]);
+    await db.run("INSERT INTO PAYMENTGATEWAY (BILL_NO, DATE, CURRENCY, AMOUNT, RAZORPAY_STATUS,USER_STATUS, TOKEN,STUDENT_ID) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)", [id, date, currency, amount , razorpay_status, user_status, receiptNo,STUDENT_ID]);
 
     await db.close()
 }

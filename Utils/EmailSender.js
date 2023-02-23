@@ -20,7 +20,7 @@ const sendVerificationEmail = async (email,msg) => {
         html:html
     };
 
-    console.log("MAIL-OPTIONS >> ", mailOptions);
+    // console.log("MAIL-OPTIONS >> ", mailOptions);
 
     await transporter.sendMail(mailOptions, (err, response) => {
         if (err) {

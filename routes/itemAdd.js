@@ -6,7 +6,6 @@ router.post('/delete',controller.postdelete)//delete
 router.post('/update-form',controller.postupdate)//update
 
 router.post('/displayItem',controller.postDisplaymenuItem) //display items acc to category
-// <<<<<<< HEAD
 
 
 router.post('/add-category',controller.postCat)//add category

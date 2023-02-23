@@ -7,21 +7,21 @@ const {findOTP} = require("../model/otp.model");
 const post = async (req, res) => {
     try {
         //hashing password using bcrypt
-        console.log(req.body)
+        // console.log(req.body)
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
         let id = Date.now().toString();
         let flagSignup=true;
         users.forEach((item) => {
-            console.log("item")
-            console.log(item)
+            // console.log("item")
+            // console.log(item)
             if(""+item[0].EMAIL_ID===""+req.body.email){
                 id=item[0].STUDENT_ID;
                 flagSignup=false;
-                console.log("id1 " + id)
+                // console.log("id1 " + id)
 
             }
         })
-        console.log("id2 " + id)
+        // console.log("id2 " + id)
 
         if(flagSignup){
             await insertData(
@@ -34,7 +34,7 @@ const post = async (req, res) => {
             )
         }
 
-        console.log("id3 " + id)
+        // console.log("id3 " + id)
         // var request = require('request');
         // request.post({
         //     headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -45,7 +45,7 @@ const post = async (req, res) => {
         //     console.log(body);
         // });
 
-        console.log("sign up successfull")
+        // console.log("sign up successfull")
         amqp.connect('amqps://grimfxlm:CpY9yP94WbLFhBadzkwtYLnCDNOPVYRq@puffin.rmq2.cloudamqp.com/grimfxlm', (connError, connection) => {
             if (connError) {
                 throw connError
@@ -79,7 +79,7 @@ const post = async (req, res) => {
     }
 }
 const get = function (req, res) {
-    console.log("get")
+    // console.log("get")
 
     res.send("get register")
 }

@@ -14,7 +14,7 @@ const razorpay = new Razorpay({
 const updateUserStatusPost=async (req,res)=>{
     const status = req.body.status;
     const oid = req.body.oid;
-    console.log("user verification")
+    // console.log("user verification")
     if (status === true) {
         await updateUserStatus(oid, status);
 
@@ -29,7 +29,7 @@ const updateRazorpayStatusPost=async (req, res) => {
     shasum.update(JSON.stringify(req.body))
     const digest = shasum.digest('hex')
 
-    console.log(JSON.stringify(req.body));
+    // console.log(JSON.stringify(req.body));
     if (digest === req.headers['x-razorpay-signature']) {
         console.log('request is legit')
         // process it

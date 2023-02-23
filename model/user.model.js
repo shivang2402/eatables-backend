@@ -37,7 +37,6 @@ const insertData = function (id, name, email, password, number, isVerified) {
             db.run("insert into USERS (STUDENT_ID,NAME,EMAIL_ID,CONTACT_NO,PASSWORD,IS_VERIFIED)values (?,?,?,?,?,?)", [id, name, email, number, password, isVerified], (err) => {
                 if (err) {
                     console.log(err)
-                    console.log("2")
                 }
 
             })

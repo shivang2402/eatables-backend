@@ -6,7 +6,7 @@ router.get('/', controller.get)
 //signup
 router.post('/', controller.post)
 router.get('/false', (req, res) => {
-    console.log("sign false")
+    console.log("signup  false")
     res.send("sign false");
 })
 module.exports = {

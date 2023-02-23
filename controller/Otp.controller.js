@@ -5,7 +5,6 @@ const post = function (req, res) {
    validateOTP(otp.otp).then((b)=>bool=b);
 
     setTimeout(()=>{
-        console.log("bool "+bool)
         if (bool) {
             res.send("true");
         } else{
@@ -14,7 +13,7 @@ const post = function (req, res) {
 
 }
 const get = function (req, res) {
-    console.log("get otp")
+    // console.log("get otp")
 
     res.send("get otp ")
 }

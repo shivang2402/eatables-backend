@@ -32,7 +32,7 @@ let ans = [];
 
 db.all(selectQuery, (err, rows) => {
     if (err) return;
-    console.log(rows[0].ITEM_IMAGE);
+    // console.log(rows[0].ITEM_IMAGE);
     // ans.push(rows);
 })
 
@@ -226,7 +226,6 @@ app.use('/item',ItemRoute.router);
 const RazorpayRoute=require('./routes/razorpay');
 app.use('/razorpay',RazorpayRoute.router);
 app.listen(3000, function () {
-    console.log("listing to port 3000 shiv")
+    console.log("listing to port 3000 ")
 })
-console.log("kokoko");
 
