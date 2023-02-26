@@ -18,7 +18,7 @@ const insertItem = async (itemId, itemName, category, itemDescription, itemPrice
         let sqlCat = "select * from CATEGORY where catName=?;";
         let res = false;
         let sqlCheck = "select * from MENUITEM where ITEM_NAME=?;";
-        const resultCat = await db.all(sqlCat, [category])
+        const resultCat = await db.all(sqlCat, [category.toString().toUpperCase()])
         const resultCheck = await db.all(sqlCheck, [itemName.toString().toUpperCase()])
         console.log("result cat")
         console.log(resultCat)

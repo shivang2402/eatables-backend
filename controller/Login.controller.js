@@ -3,9 +3,22 @@ const bcrypt = require("bcrypt");
 
 
 const authenticateUser = async (email, password) => {
-    // console.log(users)
-    const user = users[0].find(user => user.EMAIL_ID === email)
+    console.log(email,password)
+    console.log(users[0])
+
+    const user = users[0].find(user1 => {
+        console.log(typeof user1.EMAIL_ID);
+        console.log(typeof email);
+        console.log(user1.EMAIL_ID, email); // add this line to print the values of email and user1.EMAIL_ID
+        if(user1.EMAIL_ID.localeCompare(email.trim()) === 0) {
+            console.log(true, "lodo");
+        }
+        return "" + user1.EMAIL_ID.trim() === "" + email.trim();
+    });
+
+    console.log(user)
     if (user == null) {
+        console.log("nulllllllllassss")
         return false
     }
     try {
@@ -15,7 +28,7 @@ const authenticateUser = async (email, password) => {
         resB = await bcrypt.compare(password, user.PASSWORD);
 
 
-        // console.log("resB " + resB)
+        console.log("resB " + resB)
 
         return resB
 
@@ -32,10 +45,11 @@ const post=async (req, res) => {
     // console.log(req.body.password)
 
     let bool = false;
-    bool = await authenticateUser(req.body.email, req.body.password);
-    // console.log("bool1");
+    console.log(req.body)
+    bool = await authenticateUser(req.body.email.trim(), req.body.password.trim());
+    console.log("bool1");
 
-    // console.log(bool)
+    console.log(bool)
 
     // console.log("b " + bool)
     setTimeout(async () => {
