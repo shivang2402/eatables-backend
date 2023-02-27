@@ -8,13 +8,13 @@ const post = async (req, res) => {
     try {
         //hashing password using bcrypt
         // console.log(req.body)
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const hashedPassword = await bcrypt.hash(req.body.password.trim(), 10)
         let id = Date.now().toString();
         let flagSignup=true;
         users.forEach((item) => {
             // console.log("item")
             // console.log(item)
-            if(""+item[0].EMAIL_ID===""+req.body.email){
+            if(""+item[0].EMAIL_ID===""+req.body.email.trim()){
                 id=item[0].STUDENT_ID;
                 flagSignup=false;
                 // console.log("id1 " + id)
@@ -26,10 +26,10 @@ const post = async (req, res) => {
         if(flagSignup){
             await insertData(
                 id,
-                req.body.name,
-                req.body.email,
+                req.body.name.trim(),
+                req.body.email.trim(),
                 hashedPassword,
-                parseInt(req.body.number),
+                parseInt(req.body.number.trim()),
                 false
             )
         }
@@ -66,7 +66,7 @@ const post = async (req, res) => {
 
                 const msgJson = {
                     "id": id,
-                    "email": req.body.email,
+                    "email": req.body.email.trim(),
                     "otp": otp
                 }
                 chanel.sendToQueue(queue, Buffer.from(JSON.stringify(msgJson)));

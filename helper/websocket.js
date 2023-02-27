@@ -1,43 +1,9 @@
-// var WebSocket, { WebSocketServer } =require( 'ws');
+var WebSocket, { WebSocketServer } =require( 'ws');
 const {displaymenuItem} = require("../model/item.model");
-const {WebSocketServer} = require("ws");
 const sqlite3 = require('sqlite3').verbose();
 
 
-// const WebSocket = require('ws');
-// const express = require('express');
-// const {WebSocketServer} = require("ws");
-// const app = express();
-// // const server = new WebSocketServer({ port: 8080 });
-// const sqlite3 = require('sqlite3').verbose();
-//
-// app.get('/hello', (req, res) => {
-//     console.log("hello44")
-//     res.send("hello22")
-// })
-//
-// //
-// // server.on('connection', (socket) => {
-// //
-// //     console.log('Client connected');
-// //     console.log(`Client ID:`+socket.id);
-// //
-// //     socket.on('message', (message) => {
-// //         console.log(`Received message: ${message}`);
-// //
-// //         // server.clients.forEach((client) => {
-// //         //     // const formData = JSON.parse(message);
-// //         //     // console.log(formData);
-// //         //     //
-// //         //     // if (client !== socket && client.readyState === WebSocket.OPEN) {
-// //         //     client.send(message.toString());
-// //         //     // }
-// //         // });
-// //
-// //     });
-// // });
 
-// const {WebSocketServer} = require("ws");
 const server = new WebSocketServer({port: 8080});
 console.log("websocket is on")
 
@@ -59,10 +25,25 @@ db.run(`CREATE TABLE IF NOT EXISTS dummyorders
             quantity
             INTEGER
         )`);
-server.on('connection', (socket) => {
+
+async function itemBroadcast() {
+    let data = await displaymenuItem();
+    // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    let result = {
+        "type": "getData",
+        "data": data
+    };
+    // console.log(result)
+    // Loop through all connected clients and send the message to each one
+    for (const client of server.clients) {
+        if (client.readyState === client.OPEN) {
+            client.send(JSON.stringify(result));
+        }
+    }
+}
+server.on('connection', async (socket) => {
     console.log('Client connected ');
     // console.log(socket);
-
 
     socket.on('message', async (message) => {
         console.log("message get  + " + message)
@@ -70,18 +51,18 @@ server.on('connection', (socket) => {
 
 
             var msg = JSON.parse(message.toString())
-            if (msg['type'] === "getData") {
+            if (msg['type'].trim() === "getData") {
                 let data = await displaymenuItem();
-                // console.log(data);
                 let result = {
                     "type": "getData",
                     "data": data
                 }
-                console.log("result")
-                // console.log(JSON.stringify(result))
-                socket.send(JSON.stringify(result));
+socket.send(JSON.stringify(result))
+
             } else if (msg['type'] === "deliverItems") {
                 const items = JSON.parse(msg.data);
+                var itemstoDeliver = items.quantity;
+                console.log(itemstoDeliver);
                 // insert each item into the dummyorders table
                 items.forEach((item) => {
                     db.run('INSERT INTO dummyorders (item, quantity) VALUES (?, ?)', [item.item, item.quantity], (err) => {
@@ -93,15 +74,9 @@ server.on('connection', (socket) => {
                 console.log(`Inserted ${items.length} items into dummyorders`);
                 // call the checkOrder function to process the orders
                 checkOrder();
-            } else if (msg['type'] === "addData") {
-                let data = await displaymenuItem();
-                console.log(data);
-                let result = {
-                    "type": "addData",
-                    "data": data
-                }
-                socket.send(JSON.stringify(result));
-            } else if (msg['type'] === "sendItems") {
+            }
+
+                else if (msg['type'] === "sendItems") {
                 db.all('SELECT item, SUM(tobedelivered) AS total_quantity\n' +
                     'FROM orders\n' +
                     'WHERE orders.status != \'Delivered\'\n' +
@@ -111,81 +86,46 @@ server.on('connection', (socket) => {
                         console.error(err);
                         return;
                     }
+                    socket.send("s");
+
                     socket.send(JSON.stringify(rows));
                 });
             } else if (msg['type'] === "sendOrder") {
+
                 let result = {
                     "type": "sendOrder",
                     "data": msg['data']!=="sendOrder"?msg['data']:"Order get"
                 }
 
+                // console.log(msg['data']);
                 socket.send(JSON.stringify(result));
-            } else {
+            }
+            else if (msg['type'].trim() === "AddData") {
+
+                // console.log("=-=-=-=-=-=-==-====-=-==--=-==-==-==-=-")
+
+                await itemBroadcast()
+                socket.send("item added");
+            }
+            else {
+                let data = await displaymenuItem();
+
                 server.clients.forEach((client) => {
                     // if (client !== socket && client.readyState === WebSocket.OPEN) {
-                    client.send("message recevied ");
-                    // }
+                    // console.log(data);
+                    let result = {
+                        "type": "getData",
+                        "data": data
+                    }
+                    socket.emit(JSON.stringify(result));                    // }
                 });
             }
         } catch (err) {
             console.log(err)
         }
-        // }
-// =======
-// Create a new WebSocket server
-// const wss = new WebSocket.Server({ port: 8080 });
-//
-// // create or open the database
-//
-//
-// // create the dummyorder table if it doesn't exist
-//
-//
-// // Handle new WebSocket connections
-// wss.on('connection', function connection(ws) {
-//     console.log('New WebSocket connection');
-//
-//     // Send the current status of the orders to the connected WebSocket client
-//     db.all('SELECT item, SUM(tobedelivered) AS total_quantity\n' +
-//         'FROM orders\n' +
-//         'WHERE orders.status != \'Delivered\'\n'+
-//         'GROUP BY item;', function(err, rows) {
-//         console.log(rows);
-//         if (err) {
-//             console.error(err);
-//             return;
-//         }
-//         ws.send(JSON.stringify(rows));
-//     });
-//
-//     console.log('Client connected');
-//     console.log(`Client ID:` + ws.id);
-//
-//     ws.on('message', (message) => {
-//         try {
-//             // parse the JSON message
-//             const items = JSON.parse(message);
-//
-//             // insert each item into the dummyorders table
-//             items.forEach((item) => {
-//                 db.run('INSERT INTO dummyorders (item, quantity) VALUES (?, ?)', [item.item, item.quantity], (err) => {
-//                     if (err) {
-//                         console.error(err.message);
-//                     }
-//                 });
-//             });
-// // >>>>>>> 5830b1ee3af30aba34989a106740ca72d5c9b840
-//
-//             console.log(`Inserted ${items.length} items into dummyorders`);
-//
-//
-//             // call the checkOrder function to process the orders
-//             checkOrder();
-//         } catch (e) {
-//             console.error(e.message);
-//         }
+
     });
-    })
+})
 
     function checkOrder() {
         // Select the next order to process
@@ -197,7 +137,7 @@ server.on('connection', (socket) => {
             'HAVING total_quantity !=0\n' +
             'ORDER BY orders.deliverid ASC\n' +
             'LIMIT 1';
-        z
+
 
         // debug
         let selectQuery1 = 'SELECT orders.orderid, MIN(orders.deliverid) AS deliverid, SUM(dummyorders.quantity) AS total_quantity, orders.tobedelivered, orders.item, orders.status\n' +

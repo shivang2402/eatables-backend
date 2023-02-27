@@ -19,7 +19,7 @@ const selectData=async function (email) {
         filename: './USERS',
         driver: sqlite3.Database
     })
-    const result=await db.get("select * from USERS where EMAIL_ID=?", [email]);
+    const result=await db.get("select * from USERS where EMAIL_ID=?", [email.trim()]);
     return result;
 }
 

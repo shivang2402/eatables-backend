@@ -71,7 +71,7 @@ const insertOTP = function (id, otp, timeC) {
             boolEmail = true;
         }
         if(rows.length>0){
-            db.run("update OTP set OTP=? ,CREATED_AT=?,EXPIRES_AT=?  where STUDENT_ID=?",[otp,timeC,timeC+120000,id],(err)=>{
+            db.run("update OTP set OTP=? ,CREATED_AT=?,EXPIRES_AT=?  where STUDENT_ID=?",[otp,timeC,timeC+240000,id],(err)=>{
                 if (err) {
                     console.log(err)
                     // console.log("otp")
