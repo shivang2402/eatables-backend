@@ -116,8 +116,9 @@ server.on('connection', (socket) => {
             } else if (msg['type'] === "sendOrder") {
                 let result = {
                     "type": "sendOrder",
-                    "data": "Order get"
+                    "data": msg['data']!=="sendOrder"?msg['data']:"Order get"
                 }
+
                 socket.send(JSON.stringify(result));
             } else {
                 server.clients.forEach((client) => {
