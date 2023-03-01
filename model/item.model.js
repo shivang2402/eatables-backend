@@ -189,28 +189,75 @@ const displaymenuItem = async () => {
 const updateItem = async (itemName, itemDescription, category, itemPrice, availStatus, name, data, itemId) => {
     let res1 = await (async () => {
         let db = await sqlite.open({
-            filename: './menuItem', driver: sqlite3.Database
+            filename: './USERS', driver: sqlite3.Database
         });
+        console.log("shhhhh")
+        let sqlCheck = "SELECT * FROM MENUITEM WHERE ITEM_NAME = ?;";
+        const resultCheck = await db.all(sqlCheck, [itemName.toString()]);
+        // console.log(resultCheck);
 
-        // const {name, data} = req.files.pic;
-        let sql = 'UPDATE menuItem SET itemName = ?, itemDescription = ? ,category=?,itemPrice=?, availStatus=?,itemImgName=?,itemImg=? WHERE itemId = ?';
+        if (resultCheck.length !== 0) {
+            // If the item exists, update its information
+            let sqlCat = "SELECT * FROM CATEGORY WHERE catName = ?;";
+            let catID = null;
+            console.log("hahhaa");
+            if (category !== null) {
+                const resultCat = await db.all(sqlCat, [category.toString().toUpperCase()]);
+                if (resultCat.length !== 0) {
+                    catID = resultCat[0].catId;
+                } else {
+                    // If the category doesn't exist, insert it
+                    const resCat = await insertCat(category.toString().toUpperCase());
+                    if (resCat) {
+                        console.log("cat insert");
+                        catID = resCat.lastID;
+                        // console.log(catID)
+                    }
 
 
-        let values = [itemName, itemDescription, category, itemPrice, availStatus, name, data, itemId];
+                }
+            }
+            let sqlCat1 = "SELECT * FROM CATEGORY WHERE catName = ?;";
+            const resultCat1 = await db.all(sqlCat1, [category.toString().toUpperCase()]);
+            console.log(resultCat1[0].catId);
 
-        let res3 = false;
-
-        const result = await db.run(sql, values,);
-        // console.log("result")
-        // console.log(result);
-        if (result !== undefined && result.changes === 1) {
-            res3 = true;
+            // console.log("catID");
+            // console.log(catID);
+            let sqlUpdate = "UPDATE MENUITEM SET ITEM_CATEGORY = ?, ITEM_DESCRIPTION = ?, ITEM_PRICE = ?, ITEM_STATUS = ?, ITEM_IMAGE_NAME = ?, ITEM_IMAGE = ? WHERE ITEM_NAME = ?;";
+            let values = [resultCat1[0].catId, itemDescription, itemPrice, availStatus, name, data, itemName.toString()];
+            const result = await db.run(sqlUpdate, values);
+            console.log("result update");
+            console.log(result);
+            await db.close();
+            return result.changes === 1;
+        } else {
+            // If the item doesn't exist, return false
+            await db.close();
+            return false;
         }
-        // console.log('Database connection closed.');
-        // console.log("res3")
-        // console.log(res3)
-        await db.close();
-        return res3;
+
+
+
+
+        // // const {name, data} = req.files.pic;
+        // let sql = 'UPDATE MENUITEM SET ITEM_NAME = ?, ITEM_DESCRIPTION = ? ,ITEM_CATEGORY=?,ITEM_PRICE=?, ITEM_STATUS=?,ITEM_IMAGE_NAME=?,ITEM_IMAGE=? WHERE ITEM_ID = ?';
+        //
+        //
+        // let values = [itemName, itemDescription, category, itemPrice, availStatus, name, data, itemId];
+        //
+        // let res3 = false;
+        //
+        // const result = await db.run(sql, values,);
+        // // console.log("result")
+        // // console.log(result);
+        // if (result !== undefined && result.changes === 1) {
+        //     res3 = true;
+        // }
+        // // console.log('Database connection closed.');
+        // // console.log("res3")
+        // // console.log(res3)
+        // await db.close();
+        // return res3;
 
     })();
     // console.log("res1  " + res1)
@@ -222,11 +269,11 @@ const updateItem = async (itemName, itemDescription, category, itemPrice, availS
 const deleteItem = async (itemName) => {
     let res1 = await (async () => {
         let db = await sqlite.open({
-            filename: './menuItem', driver: sqlite3.Database
+            filename: './USERS', driver: sqlite3.Database
         });
 
         // const {name, data} = req.files.pic;
-        let sql = 'DELETE FROM menuItem WHERE itemName = ?;';
+        let sql = 'DELETE FROM MENUITEM WHERE ITEM_NAME = ?;';
 
         let values = [itemName];
 

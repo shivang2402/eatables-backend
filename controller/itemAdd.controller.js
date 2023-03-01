@@ -75,14 +75,17 @@ const postdeleteCat= async function (req,res)
 const postupdate= async function (req,res)
 {
     let info = req.body;
-    const {name, data} = req.files.pic;
+    const {name, data} = req.files.files;
+    console.log("sj")
+    console.log(name);
     let bool
     //itemId, itemName,category, itemDescription, itemPrice,availStatus, name, data
 
     await updateItem( info.itemName, info.itemDescription,info.category, info.itemPrice,info.availStatus,name,data,info.itemId,).then((_)=>bool=_);
-    // console.log(bool);
-    res.send(bool);
+    console.log('bool');
 
+    console.log(bool);
+    res.send(bool);
 }
 
 const postupdateCat= async function (req,res)
