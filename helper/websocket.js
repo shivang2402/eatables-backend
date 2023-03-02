@@ -1,7 +1,12 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
+<<<<<<< HEAD
 const {displaymenuItem} = require("../model/item.model");
 const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
+=======
+const {displaymenuItem, updateItem} = require("../model/item.model");
+const sqlite3 = require('sqlite3').verbose();
+>>>>>>> 32e12bd43f295256b841a6c9612e48f1ad2c6521
 
 
 
@@ -35,13 +40,14 @@ async function itemBroadcast() {
         "data": data
     };
     // console.log(result)
-    // Loop through all connected clients and send the message to each one
+    // Loop through all cosnnected clients and send the message to each one
     for (const client of server.clients) {
         if (client.readyState === client.OPEN) {
             client.send(JSON.stringify(result));
         }
     }
 }
+<<<<<<< HEAD
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection',async (ws)=>{
@@ -102,6 +108,25 @@ async function orderBroadcast() {
         }
     }
 }
+=======
+// async function itemBroadcast1() {
+//     let data = await displaymenuItem();
+//     // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+//     let result = {
+//         "type": "EditData",
+//         "data": data
+//     };
+//     console.log("QQQ")
+//     console.log(result)
+//     // Loop through all connected clients and send the message to each one
+//     for (const client of server.clients) {
+//         if (client.readyState === client.OPEN) {
+//             client.send(JSON.stringify(result));
+//         }
+//     }
+// }
+
+>>>>>>> 32e12bd43f295256b841a6c9612e48f1ad2c6521
 server.on('connection', async (socket) => {
     console.log('Client connected ');
     // console.log(socket);
@@ -118,7 +143,7 @@ server.on('connection', async (socket) => {
                     "type": "getData",
                     "data": data
                 }
-socket.send(JSON.stringify(result))
+            socket.send(JSON.stringify(result))
 
             } else if (msg['type'] === "deliverItems") {
                 const items = JSON.parse(msg.data);
@@ -176,9 +201,23 @@ socket.send(JSON.stringify(result))
                 await itemBroadcast()
                 socket.send("item added");
             }
+            else if (msg['type'].trim() === "EditData") {
+                // let data = await updateItem();
+
+                console.log("sss")
+                await itemBroadcast()
+                socket.send("item updated");
+            }
+            else if (msg['type'].trim() === "DeleteData") {
+                // let data = await updateItem();
+
+                console.log("aaaaa")
+                await itemBroadcast()
+                socket.send("item Deleted");
+            }
             else {
                 let data = await displaymenuItem();
-
+                console.log("smsms")
                 server.clients.forEach((client) => {
                     // if (client !== socket && client.readyState === WebSocket.OPEN) {
                     // console.log(data);
