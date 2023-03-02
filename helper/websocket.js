@@ -1,12 +1,8 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-<<<<<<< HEAD
-const {displaymenuItem} = require("../model/item.model");
 const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
-=======
 const {displaymenuItem, updateItem} = require("../model/item.model");
 const sqlite3 = require('sqlite3').verbose();
->>>>>>> 32e12bd43f295256b841a6c9612e48f1ad2c6521
 
 
 
@@ -47,7 +43,6 @@ async function itemBroadcast() {
         }
     }
 }
-<<<<<<< HEAD
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection',async (ws)=>{
@@ -108,7 +103,6 @@ async function orderBroadcast() {
         }
     }
 }
-=======
 // async function itemBroadcast1() {
 //     let data = await displaymenuItem();
 //     // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
@@ -126,7 +120,6 @@ async function orderBroadcast() {
 //     }
 // }
 
->>>>>>> 32e12bd43f295256b841a6c9612e48f1ad2c6521
 server.on('connection', async (socket) => {
     console.log('Client connected ');
     // console.log(socket);
