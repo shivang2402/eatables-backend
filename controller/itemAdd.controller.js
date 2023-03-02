@@ -15,6 +15,7 @@ const {displaymenuItem} =require('../model/item.model');
 
 const postinsert= async function (req,res)
 {
+    console.log("jio ----=-===-====---===-")
     let info = req.body;
     const {name, data} = req.files.files;
     let bool

@@ -1,6 +1,7 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
 const {displaymenuItem} = require("../model/item.model");
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3');
+const sqlite = require("sqlite");
 
 
 
@@ -28,7 +29,7 @@ db.run(`CREATE TABLE IF NOT EXISTS dummyorders
 
 async function itemBroadcast() {
     let data = await displaymenuItem();
-    // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
     let result = {
         "type": "getData",
         "data": data
@@ -36,6 +37,66 @@ async function itemBroadcast() {
     // console.log(result)
     // Loop through all connected clients and send the message to each one
     for (const client of server.clients) {
+        if (client.readyState === client.OPEN) {
+            client.send(JSON.stringify(result));
+        }
+    }
+}
+
+const wss=new WebSocketServer({port: 8090});
+wss.on('connection',async (ws)=>{
+    console.log("8090:=-=-=-=-=-=")
+    await orderBroadcast();
+    // ws.on('message',(message)=>{
+    //     for (const client of wss.clients) {
+    //         if (client.readyState === client.OPEN) {
+    //             client.send(JSON.stringify(message));
+    //         }
+    //     }
+    // })
+})
+async function orderBroadcast() {
+    let data =  await (async () => {
+        let db = await sqlite.open({
+            filename: './USERS', driver: sqlite3.Database
+        });
+        const sql = "select * from orders;";
+        const rows1 = await db.all(sql);
+        let values = [];
+        var temp1 = {}
+
+        rows1.forEach((row) => {
+            var temp = {
+                'deliverId': row.deliverId,
+                'orderId': row.orderId,
+                'item': row.item,
+                'quantity': row.quantity,
+                'status': row.status,
+                'customerName': row.customerName,
+                'customerEmail': row.customerEmail,
+                'delivered': row.delivered,
+                'tobedelivered': row.tobedelivered,
+
+
+            }
+            values.push(temp);
+        });
+
+        db.close()
+
+        return values;
+
+    })();
+    // console.log("res1  ")
+
+    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    let result = {
+        "type": "getData",
+        "data": data
+    };
+    // console.log(result)
+    // Loop through all connected clients and send the message to each one
+    for (const client of wss.clients) {
         if (client.readyState === client.OPEN) {
             client.send(JSON.stringify(result));
         }
@@ -50,7 +111,7 @@ server.on('connection', async (socket) => {
         try {
 
 
-            var msg = JSON.parse(message.toString())
+            let msg = JSON.parse(message.toString())
             if (msg['type'].trim() === "getData") {
                 let data = await displaymenuItem();
                 let result = {
@@ -91,14 +152,22 @@ socket.send(JSON.stringify(result))
                     socket.send(JSON.stringify(rows));
                 });
             } else if (msg['type'] === "sendOrder") {
+                const items = JSON.parse(msg.data);
 
+
+                for (let msgKey in items.products) {
+                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity])
+                }
                 let result = {
                     "type": "sendOrder",
-                    "data": msg['data']!=="sendOrder"?msg['data']:"Order get"
+                    "data": "Order get"
+
+                    // "data": msg['data']!=="sendOrder"?msg['data']:"Order get"
                 }
 
                 // console.log(msg['data']);
-                socket.send(JSON.stringify(result));
+                await orderBroadcast();
+                // socket.send(JSON.stringify(result));
             }
             else if (msg['type'].trim() === "AddData") {
 

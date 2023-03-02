@@ -4,7 +4,7 @@ const shortid = require('shortid')// for generating token
 
 //done
 const insertItem = async (itemId, itemName, category, itemDescription, itemPrice, availStatus, name, data) => {
-    // console.log("res1  " + res1)
+    console.log("res1  insertItem -=-=-=-=-=-=-=-=-=-=-=")
     return await (async () => {
         let db = await sqlite.open({
             filename: './USERS', driver: sqlite3.Database
