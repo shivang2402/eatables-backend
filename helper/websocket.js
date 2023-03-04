@@ -6,55 +6,13 @@ const sqlite3 = require('sqlite3').verbose();
 
 
 
-const server = new WebSocketServer({port: 8080});
-console.log("websocket is on")
-
-const db = new sqlite3.Database('./USERS', (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Connected to the SQLite database.');
-});
-db.run(`CREATE TABLE IF NOT EXISTS dummyorders
-        (
-            id
-            INTEGER
-            PRIMARY
-            KEY
-            AUTOINCREMENT,
-            item
-            TEXT,
-            quantity
-            INTEGER
-        )`);
-
-async function itemBroadcast() {
-    let data = await displaymenuItem();
-    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
-    let result = {
-        "type": "getData",
-        "data": data
-    };
-    // console.log(result)
-    // Loop through all cosnnected clients and send the message to each one
-    for (const client of server.clients) {
-        if (client.readyState === client.OPEN) {
-            client.send(JSON.stringify(result));
-        }
-    }
-}
-
 const wss=new WebSocketServer({port: 8090});
-wss.on('connection',async (ws)=>{
+wss.on('connection',async (socket)=>{
     console.log("8090:=-=-=-=-=-=")
     await orderBroadcast();
-    // ws.on('message',(message)=>{
-    //     for (const client of wss.clients) {
-    //         if (client.readyState === client.OPEN) {
-    //             client.send(JSON.stringify(message));
-    //         }
-    //     }
-    // })
+
+
+
 })
 async function orderBroadcast() {
     let data =  await (async () => {
@@ -103,22 +61,45 @@ async function orderBroadcast() {
         }
     }
 }
-// async function itemBroadcast1() {
-//     let data = await displaymenuItem();
-//     // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
-//     let result = {
-//         "type": "EditData",
-//         "data": data
-//     };
-//     console.log("QQQ")
-//     console.log(result)
-//     // Loop through all connected clients and send the message to each one
-//     for (const client of server.clients) {
-//         if (client.readyState === client.OPEN) {
-//             client.send(JSON.stringify(result));
-//         }
-//     }
-// }
+
+const server = new WebSocketServer({port: 8080});
+console.log("websocket is on")
+
+const db = new sqlite3.Database('./USERS', (err) => {
+    if (err) {
+        return console.error(err.message);
+    }
+    console.log('Connected to the SQLite database.');
+});
+db.run(`CREATE TABLE IF NOT EXISTS dummyorders
+        (
+            id
+            INTEGER
+            PRIMARY
+            KEY
+            AUTOINCREMENT,
+            item
+            TEXT,
+            quantity
+            INTEGER
+        )`);
+
+async function itemBroadcast() {
+    let data = await displaymenuItem();
+    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    let result = {
+        "type": "getData",
+        "data": data
+    };
+    // console.log(result)
+    // Loop through all cosnnected clients and send the message to each one
+    for (const client of server.clients) {
+        if (client.readyState === client.OPEN) {
+            client.send(JSON.stringify(result));
+        }
+    }
+}
+
 
 server.on('connection', async (socket) => {
     console.log('Client connected ');
