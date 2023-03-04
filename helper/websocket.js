@@ -121,8 +121,11 @@ server.on('connection', async (socket) => {
 
             } else if (msg['type'] === "deliverItems") {
                 const items = JSON.parse(msg.data);
-                var itemstoDeliver = items.quantity;
-                console.log(itemstoDeliver);
+                console.log(items);
+                console.log("1111111");
+                // var itemstoDeliver = items.quantity.toString();
+                console.log("1111111");
+
                 // insert each item into the dummyorders table
                 items.forEach((item) => {
                     db.run('INSERT INTO dummyorders (item, quantity) VALUES (?, ?)', [item.item, item.quantity], (err) => {
@@ -311,7 +314,7 @@ server.on('connection', async (socket) => {
                             delivered     = ?,
                             status        = 'Partially Delivered'
                         WHERE deliverid = ?
-                    `, [itemsToDeliver, row.total_quantity, order.deliverid], (err) => {
+                    `, [itemsToDeliver, row.total_quantity, order.deliverId], (err) => {
                         if (err) {
                             console.error(err);
                         }
@@ -327,7 +330,7 @@ server.on('connection', async (socket) => {
                             deleteDummyOrder(order.item);
                         }
                     });
-                    console.log(`Order ${order.orderid} for ${order.item} partially delivered`);
+                    console.log(`Order ${order.orderId} for ${order.item} partially delivered`);
                 }
 
                 // Call the checkOrder function recursively to process the next order

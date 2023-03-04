@@ -225,8 +225,10 @@ app.use('/item',ItemRoute.router);
 
 const RazorpayRoute=require('./routes/razorpay');
 app.use('/razorpay',RazorpayRoute.router);
+
+app.use("/api",require("./routes/app.routes"));
+
 app.listen(3000, function () {
     console.log("listing to port 3000 ")
 })
-app.use("/api",require("./routes/app.routes"));
 
