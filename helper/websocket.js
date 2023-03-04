@@ -1,5 +1,5 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-const sqlite3 = require('sqlite3');
+// const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 const sqlite3 = require('sqlite3').verbose();

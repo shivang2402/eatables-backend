@@ -1,9 +1,9 @@
-var admin= require("firebase-admin")
-var fcm = require("fcm-notification");
+const admin = require("firebase-admin");
+const fcm = require("fcm-notification");
 
-var serviceAccount= require("../config/push-notification-key.json");
+const serviceAccount = require("../config/push-notification-key.json");
 const certPath= admin.credential.cert(serviceAccount);
-var FCM = new fcm(certPath);
+const FCM = new fcm(certPath);
 exports.sendPushNotification=(req,res,next)=>
 {
     console.log(req);

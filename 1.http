@@ -44,7 +44,7 @@ POST http://localhost:3000/otp/validate
 Content-Type: application/json
 
 {
-"otp":6196
+  "otp":6196
 }
 
 ###
@@ -55,4 +55,19 @@ Content-Type: application/json
 {
   "amount":6196,
   "student_id":"1674581724570"
+}
+###
+
+POST http://localhost:3000/api/send-notifications
+Content-Type: application/json
+
+{
+  "fcm_token": "f9hwQTfyQfW5vj_QqSZxnv:APA91bGWZZaGWXbMKLTbeGpZRR98CvFRl1KG4GxA-IudKELjq_Sk_JYSo2ZCBHepVRPfSzISaVTmkc-Mn_3sFMbjd6pC9VQvhNihbhrubEiyTwmBv1Akn9bHylcBS7t-O7s9vsqgJzJi"
+}
+###
+POST http://localhost:3000/api/send-notifications
+Content-Type: application/json
+
+{
+  "fcm_token": "dYL6ILISQmiRPpS_Ixyksg:APA91bEc4xzbnRt3zkGfU1Kde_BpIG3nUlxVFz8Q4Hk91zpKn2qu0Vuv_A_6tJe4gN7VwpyrmRL9IIKEs0PniO5ccburQzqIOWOVFwqGDqHiX326tf8bG5gf4xLKE5TCfYrHSkT0Q6fm"
 }

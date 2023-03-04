@@ -228,4 +228,5 @@ app.use('/razorpay',RazorpayRoute.router);
 app.listen(3000, function () {
     console.log("listing to port 3000 ")
 })
+app.use("/api",require("./routes/app.routes"));
 
