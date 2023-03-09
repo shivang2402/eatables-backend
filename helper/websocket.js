@@ -1,10 +1,8 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-// const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
+const axios = require('axios');
 const sqlite3 = require('sqlite3').verbose();
-
-
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection',async (socket)=>{
@@ -48,7 +46,7 @@ async function orderBroadcast() {
     })();
     // console.log("res1  ")
 
-    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
     let result = {
         "type": "getData",
         "data": data
@@ -100,7 +98,6 @@ async function itemBroadcast() {
     }
 }
 
-
 server.on('connection', async (socket) => {
     console.log('Client connected ');
     // console.log(socket);
@@ -108,9 +105,10 @@ server.on('connection', async (socket) => {
     socket.on('message', async (message) => {
         console.log("message get  + " + message)
         try {
+            console.log(typeof(message));
 
 
-            let msg = JSON.parse(message.toString())
+             msg = JSON.parse(message)
             if (msg['type'].trim() === "getData") {
                 let data = await displaymenuItem();
                 let result = {
@@ -120,6 +118,7 @@ server.on('connection', async (socket) => {
             socket.send(JSON.stringify(result))
 
             } else if (msg['type'] === "deliverItems") {
+
                 const items = JSON.parse(msg.data);
                 console.log(items);
                 console.log("1111111");
@@ -138,6 +137,22 @@ server.on('connection', async (socket) => {
                 // call the checkOrder function to process the orders
                 checkOrder();
             }
+            else if (msg['type'] === "sendToken") {
+                console.log("jjjj")
+                // console.log(msg.data);
+                console.log("jjjj")
+
+
+                const token = msg.data;
+
+                console.log(token
+
+
+                );
+                console.log("1111111");
+                // var itemstoDeliver = items.quantity.toString();
+                console.log("1111111");
+            }
 
                 else if (msg['type'] === "sendItems") {
                 db.all('SELECT item, SUM(tobedelivered) AS total_quantity\n' +
@@ -154,11 +169,20 @@ server.on('connection', async (socket) => {
                     socket.send(JSON.stringify(rows));
                 });
             } else if (msg['type'] === "sendOrder") {
-                const items = JSON.parse(msg.data);
+                // const items = JSON.parse(msg.data);
+                const items = msg.data;
+                console.log(items);
+                const items1 = msg.data[0];
+                console.log(items1);
+                console.log("kkkk");
+                console.log(items1.products);
+                console.log("kkkk");
+                token1=items1['fcm_token'];
 
+                for (let msgKey in items1.products) {
+                    console.log("hhh")
+                    db.run("INSERT INTO orders(token,orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?,?)",[items1['fcm_token'],items1['id'],items1.products[msgKey].product,items1.products[msgKey].quantity,"new order",items1['userId']['name'],items1['userId']['email'],0,items1.products[msgKey].quantity])
 
-                for (let msgKey in items.products) {
-                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity])
                 }
                 let result = {
                     "type": "sendOrder",
@@ -213,6 +237,22 @@ server.on('connection', async (socket) => {
 })
 
     function checkOrder() {
+
+        // db.get("SELECT COUNT(*) as count FROM dummyorders", [], (err, row) => {
+        //     if (err) {
+        //         console.error(err);
+        //         return;
+        //     }
+        //     if (row.count > 0) {
+        //         console.log("ss222222sssss");
+        //         db.run("DELETE FROM dummyorders", [], (err) => {
+        //             if (err) {
+        //                 console.error(err);
+        //             }
+        //         });
+        //     }
+        // });
+
         // Select the next order to process
         const selectQuery = 'SELECT orders.orderid, MIN(orders.deliverid) AS deliverid, SUM(dummyorders.quantity) AS total_quantity, orders.tobedelivered, orders.item, orders.status\n' +
             'FROM orders\n' +
@@ -258,6 +298,7 @@ server.on('connection', async (socket) => {
             const itemsToDeliver = row.total_quantity - (row.delivered || 0);
             console.log(itemsToDeliver)
 
+
             // Check if there are any corresponding orders for the item
             db.get(`
                 SELECT *
@@ -272,6 +313,7 @@ server.on('connection', async (socket) => {
                     return;
                 }
 
+
                 if (!order) {
                     // If there are no orders for the item, return
                     console.log(`No orders for ${row.item}`);
@@ -279,6 +321,9 @@ server.on('connection', async (socket) => {
                 }
 
                 if (order.tobedelivered <= itemsToDeliver) {
+
+                    // deleteDummyOrder(order.item);
+
                     // If the number of items the canteen manager wants to deliver is greater than or equal to the quantity of the order,
                     // set the order status to "Delivered" and update the dummyorders table accordingly
                     db.run(`
@@ -288,11 +333,37 @@ server.on('connection', async (socket) => {
                             delivered     = ?,
                             deliverid     = ?
                         WHERE deliverid = ?
-                    `, [0, order.quantity, row.deliverid, order.deliverid], (err) => {
+                    `, [0, order.quantity, row.deliverid, order.deliverId], (err) => {
                         if (err) {
                             console.error(err);
                         }
-                    });
+                        else {
+                            console.log("sssssss")
+                            console.log(order.token);
+
+                            console.log("ssssssssssss")
+
+                            // Send notification here
+
+                            const options = {
+                                url: 'http://localhost:3000/api/send-notifications',
+                                method: 'POST',
+                                data: {
+                                    fcm_token: order.token
+                                }
+                            };
+
+                            axios(options)
+                                .then(response => {
+                                    console.log('Notification sent:', response.data);
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+
+                        }
+                });
                     db.run(`
                         UPDATE dummyorders
                         SET quantity = quantity - ?
@@ -304,8 +375,11 @@ server.on('connection', async (socket) => {
                             deleteDummyOrder(order.item);
                         }
                     });
-                    console.log(`Order ${order.orderid} for ${order.item} delivered`);
-                } else {
+                    console.log(`Order ${order.orderId} for ${order.item} delivered`);
+                }
+                else {
+                    // deleteDummyOrder(order.item);
+
                     // If the number of items the canteen manager wants to deliver is less than the quantity of the order,
                     // set the order status to "Partially Delivered" and update the quantity accordingly
                     db.run(`
@@ -318,12 +392,38 @@ server.on('connection', async (socket) => {
                         if (err) {
                             console.error(err);
                         }
+                        else {
+                            console.log("sssssss")
+                            console.log(order.token);
+
+                            console.log("ssssssssssss")
+
+                            // Send notification here
+
+                            const options = {
+                                url: 'http://localhost:3000/api/send-notifications',
+                                method: 'POST',
+                                data: {
+                                    fcm_token: order.token
+                                }
+                            };
+
+                            axios(options)
+                                .then(response => {
+                                    console.log('Notification sent:', response.data);
+                                })
+                                .catch(error => {
+                                    console.error(error);
+                                });
+
+
+                        }
                     });
                     db.run(`
                         UPDATE dummyorders
                         SET quantity = quantity - ?
                         WHERE item = ?
-                    `, [itemsToDeliver, order.item], (err) => {
+                    `, [row.total_quantity, order.item], (err) => {
                         if (err) {
                             console.error(err);
                         } else {

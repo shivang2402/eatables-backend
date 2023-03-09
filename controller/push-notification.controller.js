@@ -6,8 +6,8 @@ const certPath= admin.credential.cert(serviceAccount);
 const FCM = new fcm(certPath);
 exports.sendPushNotification=(req,res,next)=>
 {
-    console.log(req);
-    console.log(req.body)
+    // console.log(req);
+    // console.log(req.body)
     try {
         let message={
             notification:{
