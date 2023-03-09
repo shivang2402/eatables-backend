@@ -22,7 +22,18 @@ const selectData=async function (email) {
     const result=await db.get("select * from USERS where EMAIL_ID=?", [email.trim()]);
     return result;
 }
+const updatePassword=function(email,password){
+    const db = new sqlite3.Database("./USERS")
+    db.all("update USERS set PASSWORD=? where EMAIL_ID=?", [password,email], (err, rows) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log("update -----");
 
+    })
+
+    db.close()
+}
 const insertData = function (id, name, email, password, number, isVerified) {
     const db = new sqlite3.Database("./USERS")
     let boolEmail = false;
@@ -57,5 +68,6 @@ const insertData = function (id, name, email, password, number, isVerified) {
 module.exports = {
     getData: users,
     insertData: insertData,
-    selectData:selectData
+    selectData:selectData,
+    updatePassword:updatePassword
 }

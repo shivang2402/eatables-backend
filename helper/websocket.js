@@ -2,7 +2,6 @@ var WebSocket, { WebSocketServer } =require( 'ws');
 const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
-const sqlite3 = require('sqlite3').verbose();
 
 
 
@@ -77,8 +76,6 @@ async function orderBroadcast() {
                 'customerEmail': row.customerEmail,
                 'delivered': row.delivered,
                 'tobedelivered': row.tobedelivered,
-
-
             }
             values.push(temp);
         });
@@ -171,10 +168,10 @@ server.on('connection', async (socket) => {
                 });
             } else if (msg['type'] === "sendOrder") {
                 const items = JSON.parse(msg.data);
-
+                console.log(items)
 
                 for (let msgKey in items.products) {
-                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity])
+                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered,AMOUNT) VALUES (?,?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity,items.amount])
                 }
                 let result = {
                     "type": "sendOrder",

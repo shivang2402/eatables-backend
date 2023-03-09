@@ -221,8 +221,12 @@ app.use('/otp', OtpRoute.router);
 const ItemRoute=require('./routes/itemAdd');
 app.use('/item',ItemRoute.router);
 
-// >>>>>>> a6a8ebc (food item add)
+const OrderRoute=require('./routes/order');
+app.use('/order',OrderRoute.router);
 
+// >>>>>>> a6a8ebc (food item add)
+const forgotPasswordRoute=require('./routes/ForgotPassword');
+app.use('/forgotPassword',forgotPasswordRoute.router);
 const RazorpayRoute=require('./routes/razorpay');
 app.use('/razorpay',RazorpayRoute.router);
 app.listen(3000, function () {

@@ -22,10 +22,7 @@ const authenticateUser = async (email, password) => {
         return false
     }
     try {
-        let resB = false;
-
-
-        resB = await bcrypt.compare(password, user.PASSWORD);
+        let resB = await bcrypt.compare(password, user.PASSWORD);
 
 
         console.log("resB " + resB)
