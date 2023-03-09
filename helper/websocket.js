@@ -1,11 +1,8 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
-<<<<<<< HEAD
 const axios = require('axios');
 const sqlite3 = require('sqlite3').verbose();
-=======
->>>>>>> bd1ae6435dc0380aa4095b7b150d13952a988904
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection',async (socket)=>{
@@ -170,28 +167,19 @@ server.on('connection', async (socket) => {
                     socket.send(JSON.stringify(rows));
                 });
             } else if (msg['type'] === "sendOrder") {
-<<<<<<< HEAD
-                // const items = JSON.parse(msg.data);
-                const items = msg.data;
-                console.log(items);
-                const items1 = msg.data[0];
-                console.log(items1);
-                console.log("kkkk");
-                console.log(items1.products);
-                console.log("kkkk");
-                token1=items1['fcm_token'];
-
-                for (let msgKey in items1.products) {
-                    console.log("hhh")
-                    db.run("INSERT INTO orders(token,orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?,?)",[items1['fcm_token'],items1['id'],items1.products[msgKey].product,items1.products[msgKey].quantity,"new order",items1['userId']['name'],items1['userId']['email'],0,items1.products[msgKey].quantity])
-
-=======
                 const items = JSON.parse(msg.data);
+                // const items = msg.data;
+                // const items = msg.data[0];
+
                 console.log(items)
+                console.log("ssssss");
+                console.log(items.products);
+                console.log("kkkk");
+
 
                 for (let msgKey in items.products) {
-                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered,AMOUNT) VALUES (?,?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity,items.amount])
->>>>>>> bd1ae6435dc0380aa4095b7b150d13952a988904
+                    console.log("fggggglol")
+                    db.run("INSERT INTO orders(token,orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered,AMOUNT) VALUES (?,?,?,?,?,?,?,?,?,?)",[items['fcm_token'],items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity,items.amount])
                 }
                 let result = {
                     "type": "sendOrder",
