@@ -18,6 +18,16 @@ Content-Type: application/json
   "email":"namanrajani16@gmail.com",
   "password":"12345678900"
 }
+###
+POST http://localhost:3000/order/adminOrderHistory
+
+###
+POST http://localhost:3000/order/orderHistory
+Content-Type: application/json
+
+{
+  "email":"namanrajani16@gmail.com"
+}
 
 ###
 POST http://localhost:3000/register/

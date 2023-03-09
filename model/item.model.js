@@ -107,10 +107,10 @@ const insertCat = async (catName) => {
 const displayCat = async () => {
     let res1 = await (async () => {
         let db = await sqlite.open({
-            filename: './menuItem', driver: sqlite3.Database
+            filename: './USERS', driver: sqlite3.Database
         });
         // const {name, data} = req.files.pic;
-        let sql = "SELECT category FROM menuItem";
+        let sql = "SELECT * FROM CATEGORY";
         let values = [];
 
         const rows = await db.all(sql);
@@ -145,8 +145,9 @@ const displaymenuItem = async () => {
         let db = await sqlite.open({
             filename: './USERS', driver: sqlite3.Database
         });
-        const sql = "select * from MENUITEM;";
+        const sql = "select * from MENUITEM inner join CATEGORY on MENUITEM.ITEM_CATEGORY=CATEGORY.catId;";
         const rows1 = await db.all(sql);
+
         let values = [];
         var temp1 = {}
 
@@ -154,14 +155,14 @@ const displaymenuItem = async () => {
             var temp = {
                 'id': row.ITEM_ID,
                 'title': row.ITEM_NAME,
-                'category': row.ITEM_CATEGORY,
+                'category': row.catName,
                 'description': row.ITEM_DESCRIPTION,
                 'price': row.ITEM_PRICE,
                 'image': row.ITEM_IMAGE
             }
             values.push(temp);
         });
-
+        console.log(values);
         // const rows = await db.all(`SELECT c.catName as category_name,
         //         (SELECT JSON_GROUP_ARRAY(
         //             JSON_OBJECT(

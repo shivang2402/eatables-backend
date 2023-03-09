@@ -1,8 +1,11 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
+<<<<<<< HEAD
 const axios = require('axios');
 const sqlite3 = require('sqlite3').verbose();
+=======
+>>>>>>> bd1ae6435dc0380aa4095b7b150d13952a988904
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection',async (socket)=>{
@@ -33,8 +36,6 @@ async function orderBroadcast() {
                 'customerEmail': row.customerEmail,
                 'delivered': row.delivered,
                 'tobedelivered': row.tobedelivered,
-
-
             }
             values.push(temp);
         });
@@ -169,6 +170,7 @@ server.on('connection', async (socket) => {
                     socket.send(JSON.stringify(rows));
                 });
             } else if (msg['type'] === "sendOrder") {
+<<<<<<< HEAD
                 // const items = JSON.parse(msg.data);
                 const items = msg.data;
                 console.log(items);
@@ -183,6 +185,13 @@ server.on('connection', async (socket) => {
                     console.log("hhh")
                     db.run("INSERT INTO orders(token,orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered) VALUES (?,?,?,?,?,?,?,?,?)",[items1['fcm_token'],items1['id'],items1.products[msgKey].product,items1.products[msgKey].quantity,"new order",items1['userId']['name'],items1['userId']['email'],0,items1.products[msgKey].quantity])
 
+=======
+                const items = JSON.parse(msg.data);
+                console.log(items)
+
+                for (let msgKey in items.products) {
+                    db.run("INSERT INTO orders(orderId,item,quantity,status,customerName,customerEmail,delivered,tobedelivered,AMOUNT) VALUES (?,?,?,?,?,?,?,?,?)",[items['id'],items.products[msgKey].product,items.products[msgKey].quantity,"new order",items['userId']['name'],items['userId']['email'],0,items.products[msgKey].quantity,items.amount])
+>>>>>>> bd1ae6435dc0380aa4095b7b150d13952a988904
                 }
                 let result = {
                     "type": "sendOrder",
