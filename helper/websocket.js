@@ -1,59 +1,17 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-const sqlite3 = require('sqlite3');
+// const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 
 
 
-const server = new WebSocketServer({port: 8080});
-console.log("websocket is on")
-
-const db = new sqlite3.Database('./USERS', (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Connected to the SQLite database.');
-});
-db.run(`CREATE TABLE IF NOT EXISTS dummyorders
-        (
-            id
-            INTEGER
-            PRIMARY
-            KEY
-            AUTOINCREMENT,
-            item
-            TEXT,
-            quantity
-            INTEGER
-        )`);
-
-async function itemBroadcast() {
-    let data = await displaymenuItem();
-    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
-    let result = {
-        "type": "getData",
-        "data": data
-    };
-    // console.log(result)
-    // Loop through all cosnnected clients and send the message to each one
-    for (const client of server.clients) {
-        if (client.readyState === client.OPEN) {
-            client.send(JSON.stringify(result));
-        }
-    }
-}
-
 const wss=new WebSocketServer({port: 8090});
-wss.on('connection',async (ws)=>{
+wss.on('connection',async (socket)=>{
     console.log("8090:=-=-=-=-=-=")
     await orderBroadcast();
-    // ws.on('message',(message)=>{
-    //     for (const client of wss.clients) {
-    //         if (client.readyState === client.OPEN) {
-    //             client.send(JSON.stringify(message));
-    //         }
-    //     }
-    // })
+
+
+
 })
 async function orderBroadcast() {
     let data =  await (async () => {
@@ -100,22 +58,45 @@ async function orderBroadcast() {
         }
     }
 }
-// async function itemBroadcast1() {
-//     let data = await displaymenuItem();
-//     // console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
-//     let result = {
-//         "type": "EditData",
-//         "data": data
-//     };
-//     console.log("QQQ")
-//     console.log(result)
-//     // Loop through all connected clients and send the message to each one
-//     for (const client of server.clients) {
-//         if (client.readyState === client.OPEN) {
-//             client.send(JSON.stringify(result));
-//         }
-//     }
-// }
+
+const server = new WebSocketServer({port: 8080});
+console.log("websocket is on")
+
+const db = new sqlite3.Database('./USERS', (err) => {
+    if (err) {
+        return console.error(err.message);
+    }
+    console.log('Connected to the SQLite database.');
+});
+db.run(`CREATE TABLE IF NOT EXISTS dummyorders
+        (
+            id
+            INTEGER
+            PRIMARY
+            KEY
+            AUTOINCREMENT,
+            item
+            TEXT,
+            quantity
+            INTEGER
+        )`);
+
+async function itemBroadcast() {
+    let data = await displaymenuItem();
+    console.log("-------=-=-=-=-===-=-=-=-=-=-==-==-");
+    let result = {
+        "type": "getData",
+        "data": data
+    };
+    // console.log(result)
+    // Loop through all cosnnected clients and send the message to each one
+    for (const client of server.clients) {
+        if (client.readyState === client.OPEN) {
+            client.send(JSON.stringify(result));
+        }
+    }
+}
+
 
 server.on('connection', async (socket) => {
     console.log('Client connected ');
@@ -137,8 +118,11 @@ server.on('connection', async (socket) => {
 
             } else if (msg['type'] === "deliverItems") {
                 const items = JSON.parse(msg.data);
-                var itemstoDeliver = items.quantity;
-                console.log(itemstoDeliver);
+                console.log(items);
+                console.log("1111111");
+                // var itemstoDeliver = items.quantity.toString();
+                console.log("1111111");
+
                 // insert each item into the dummyorders table
                 items.forEach((item) => {
                     db.run('INSERT INTO dummyorders (item, quantity) VALUES (?, ?)', [item.item, item.quantity], (err) => {
@@ -327,7 +311,7 @@ server.on('connection', async (socket) => {
                             delivered     = ?,
                             status        = 'Partially Delivered'
                         WHERE deliverid = ?
-                    `, [itemsToDeliver, row.total_quantity, order.deliverid], (err) => {
+                    `, [itemsToDeliver, row.total_quantity, order.deliverId], (err) => {
                         if (err) {
                             console.error(err);
                         }
@@ -343,7 +327,7 @@ server.on('connection', async (socket) => {
                             deleteDummyOrder(order.item);
                         }
                     });
-                    console.log(`Order ${order.orderid} for ${order.item} partially delivered`);
+                    console.log(`Order ${order.orderId} for ${order.item} partially delivered`);
                 }
 
                 // Call the checkOrder function recursively to process the next order
