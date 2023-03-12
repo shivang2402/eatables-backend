@@ -224,6 +224,9 @@ app.use('/item',ItemRoute.router);
 const OrderRoute=require('./routes/order');
 app.use('/order',OrderRoute.router);
 
+const NotifyRoute=require('./routes/notify');
+app.use('/notify',NotifyRoute.router);
+
 // >>>>>>> a6a8ebc (food item add)
 const forgotPasswordRoute=require('./routes/ForgotPassword');
 app.use('/forgotPassword',forgotPasswordRoute.router);

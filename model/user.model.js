@@ -37,6 +37,8 @@ const updatePassword=function(email,password){
 const insertData = function (id, name, email, password, number, isVerified) {
     const db = new sqlite3.Database("./USERS")
     let boolEmail = false;
+    console.log("lo1l")
+
     db.all("select * from USERS where EMAIL_ID=?", [email], (err, rows) => {
         if (err) {
             console.log(err)
@@ -44,6 +46,7 @@ const insertData = function (id, name, email, password, number, isVerified) {
         if (rows.length <= 0) {
             boolEmail = true
         }
+
         if (boolEmail && validator.validate(email)) {
             db.run("insert into USERS (STUDENT_ID,NAME,EMAIL_ID,CONTACT_NO,PASSWORD,IS_VERIFIED)values (?,?,?,?,?,?)", [id, name, email, number, password, isVerified], (err) => {
                 if (err) {
@@ -61,7 +64,7 @@ const insertData = function (id, name, email, password, number, isVerified) {
             })
         }
     })
-
+    console.log("lol")
     db.close()
 }
 
