@@ -1,8 +1,4 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-<<<<<<< HEAD
-const sqlite3 = require('sqlite3');
-=======
->>>>>>> 155e456395785ac18dca8daa27cacea6817f8458
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 const axios = require('axios');
