@@ -1,14 +1,14 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
-// const sqlite3 = require('sqlite3');
+const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 
 
 
 const wss=new WebSocketServer({port: 8090});
-wss.on('connection',async (socket)=>{
+wss.on('connection', (socket)=>{
     console.log("8090:=-=-=-=-=-=")
-    await orderBroadcast();
+     orderBroadcast();
 
 
 
