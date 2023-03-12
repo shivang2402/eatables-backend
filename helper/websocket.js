@@ -1,4 +1,8 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
+<<<<<<< HEAD
+const sqlite3 = require('sqlite3');
+=======
+>>>>>>> 155e456395785ac18dca8daa27cacea6817f8458
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 const axios = require('axios');
@@ -6,9 +10,9 @@ const otpGenerator = require("otp-generator");
 const sqlite3 = require('sqlite3').verbose();
 
 const wss=new WebSocketServer({port: 8090});
-wss.on('connection',async (socket)=>{
+wss.on('connection', (socket)=>{
     console.log("8090:=-=-=-=-=-=")
-    await orderBroadcast();
+     orderBroadcast();
 
 
 
