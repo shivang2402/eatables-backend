@@ -1,8 +1,16 @@
 var WebSocket, { WebSocketServer } =require( 'ws');
+<<<<<<< HEAD
 const sqlite3 = require('sqlite3');
 const sqlite = require("sqlite");
 const {displaymenuItem, updateItem} = require("../model/item.model");
 const axios = require('axios');
+=======
+const sqlite = require("sqlite");
+const {displaymenuItem, updateItem} = require("../model/item.model");
+const axios = require('axios');
+const otpGenerator = require("otp-generator");
+const sqlite3 = require('sqlite3').verbose();
+>>>>>>> 364197d081eda3ca9f4318460b21a00dec1bd91a
 
 const wss=new WebSocketServer({port: 8090});
 wss.on('connection', (socket)=>{
@@ -151,6 +159,7 @@ server.on('connection', async (socket) => {
                 // var itemstoDeliver = items.quantity.toString();
                 console.log("1111111");
             }
+
 
                 else if (msg['type'] === "sendItems") {
                 db.all('SELECT item, SUM(tobedelivered) AS total_quantity\n' +
@@ -335,6 +344,10 @@ server.on('connection', async (socket) => {
                             console.error(err);
                         }
                         else {
+                            const body=`Order ${order.orderId} for ${order.item} delivered`;
+                            const title=`Hello ${order.customerName} , your ${order.item} is ready to go`;
+
+
                             console.log("sssssss")
                             console.log(order.token);
 
@@ -346,7 +359,10 @@ server.on('connection', async (socket) => {
                                 url: 'http://localhost:3000/api/send-notifications',
                                 method: 'POST',
                                 data: {
+                                    title: title,
+                                    body: body,
                                     fcm_token: order.token
+
                                 }
                             };
 
@@ -370,6 +386,7 @@ server.on('connection', async (socket) => {
                             console.error(err);
                         } else {
                             deleteDummyOrder(order.item);
+
                         }
                     });
                     console.log(`Order ${order.orderId} for ${order.item} delivered`);
@@ -390,10 +407,30 @@ server.on('connection', async (socket) => {
                             console.error(err);
                         }
                         else {
+
+
+                            const body=`Order ${order.orderId} for ${order.item} is prepared`;
+                            const title=`Hello ${order.customerName} , your ${order.item} is ready to go`;
+                            const Otp = otpGenerator.generate(4, {
+                                upperCaseAlphabets: false,
+                                specialChars: false,
+                                lowerCaseAlphabets: false
+                            });
+
+                            db.run(`
+                        UPDATE orders
+                        SET otp = ?
+                        WHERE orderId = ?
+                    `, [Otp, order.orderId], (err) => {
+                                if (err) {
+                                    console.error(err);
+                                }
+                            });
                             console.log("sssssss")
                             console.log(order.token);
 
                             console.log("ssssssssssss")
+
 
                             // Send notification here
 
@@ -401,9 +438,15 @@ server.on('connection', async (socket) => {
                                 url: 'http://localhost:3000/api/send-notifications',
                                 method: 'POST',
                                 data: {
-                                    fcm_token: order.token
+                                    title: title,
+                                    body: body,
+                                    fcm_token: order.token,
+                                    otp:Otp
+
                                 }
+
                             };
+                            console.log(options)
 
                             axios(options)
                                 .then(response => {

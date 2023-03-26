@@ -18,20 +18,13 @@ const showUserOrderHistory=async (email) => {
     return values;
 
 }
+
 const showAdminOrderHistory=async () => {
     let db = await sqlite.open({
         filename: './USERS', driver: sqlite3.Database
     });
-    // let sql = "SELECT DISTINCT customerEmail FROM orders ;";
-    // let values=[]
-    // const rows = await db.all(sql,);
-    // for (const row of rows) {
-    //
-    //     let data=await showUserOrderHistory(row.customerEmail);
-    //     values.push(data);
-    // }
-    let sql = "SELECT  * FROM orders ;";
 
+    let sql = "SELECT  * FROM orders ;";
     let values = {};
 
     const rows = await db.all(sql,);

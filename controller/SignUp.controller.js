@@ -7,23 +7,26 @@ const {findOTP} = require("../model/otp.model");
 const post = async (req, res) => {
     try {
         //hashing password using bcrypt
-        // console.log(req.body)
+        console.log(req.body)
         const hashedPassword = await bcrypt.hash(req.body.password.trim(), 10)
         let id = Date.now().toString();
-        let flagSignup=true;
+        let flagSignup = true;
         users.forEach((item) => {
-            // console.log("item")
-            // console.log(item)
-            if(""+item[0].EMAIL_ID===""+req.body.email.trim()){
-                id=item[0].STUDENT_ID;
-                flagSignup=false;
-                // console.log("id1 " + id)
+            console.log("item")
+            console.log(item.length)
+            if (item.length !== 0) {
+                if ((item[0].EMAIL_ID) === (req.body.email.trim())) {
+                    id = item[0].STUDENT_ID;
+                    flagSignup = false;
+                    console.log("id1 " + id)
 
+                }
             }
+            console.log(",lp[[")
         })
-        // console.log("id2 " + id)
+        console.log("id2 " + id)
 
-        if(flagSignup){
+        if (flagSignup) {
             await insertData(
                 id,
                 req.body.name.trim(),

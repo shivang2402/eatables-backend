@@ -47,7 +47,6 @@ const { sendVerificationEmail } = require("./Utils/EmailSender.js");
 
 // app.use(require('./helper/menuAdd.websocket')())
 import('./helper/websocket.js');
-/
 const amqp = require('amqplib/callback_api')
 amqp.connect('amqps://grimfxlm:CpY9yP94WbLFhBadzkwtYLnCDNOPVYRq@puffin.rmq2.cloudamqp.com/grimfxlm', (connError, connection) => {
     if (connError) {
@@ -109,6 +108,9 @@ app.use('/item',ItemRoute.router);
 
 const OrderRoute=require('./routes/order');
 app.use('/order',OrderRoute.router);
+
+const NotifyRoute=require('./routes/notify');
+app.use('/notify',NotifyRoute.router);
 
 // >>>>>>> a6a8ebc (food item add)
 const forgotPasswordRoute=require('./routes/ForgotPassword');

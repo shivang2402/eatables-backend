@@ -195,7 +195,7 @@ const updateItem = async (itemName, itemDescription, category, itemPrice, availS
         console.log("shhhhh")
         let sqlCheck = "SELECT * FROM MENUITEM WHERE ITEM_NAME = ?;";
         const resultCheck = await db.all(sqlCheck, [itemName.toString()]);
-        // console.log(resultCheck);
+        console.log(resultCheck);
 
         if (resultCheck.length !== 0) {
             // If the item exists, update its information

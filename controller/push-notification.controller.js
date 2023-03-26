@@ -11,11 +11,12 @@ exports.sendPushNotification=(req,res,next)=>
     try {
         let message={
             notification:{
-                title:"Test Notification",
-                body:"Notification Message"
+                title:req.body.title,
+                body:req.body.body,
             },data:{
                 orderId:"123456",
-                orderDate:"2022-10-22"
+                orderDate:"2022-10-22",
+                otp: req.body.otp
             },
             token: req.body.fcm_token,
         };
