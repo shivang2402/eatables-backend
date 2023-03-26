@@ -36,115 +36,6 @@ db.all(selectQuery, (err, rows) => {
     // ans.push(rows);
 })
 
-// app.get('/index', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/index.html');
-// })
-// app.get('/delete', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/delete.html');
-// })
-// app.get('/update', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/update.html');
-// })
-// app.get('/addCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/cat-add.html');
-// })
-// app.get('/updateCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/cat-update.html');
-// })
-//
-// app.get('/deleteCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/cat-delete.html');
-// })
-// app.get('/displayCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/display.html');
-// })
-// app.get('/displayItem', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/display-menu-item.html');
-// })
-// =======
-//for testing purpose
-// >>>>>>> 3d4bc8f (This is a new commit for what I originally planned to be amended)
-// let db = new sqlite3.Database('./menuItem');
-// let selectQuery = 'SELECT * FROM menuItem ;';
-// let ans = [];
-//
-// db.all(selectQuery, (err, rows) => {
-//     if (err) return;
-//     console.log(rows);
-//     ans.push(rows);
-// });
-//
-// app.get('/index', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/index.html');
-// })
-// app.get('/delete', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/delete.html');
-// })
-// app.get('/update', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/update.html');
-// })
-// app.get('/addCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/cat-add.html');
-// })
-// app.get('/displayCat', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/display.html');
-// })
-// app.get('/displayItem', (req, res) => {
-//     console.log(ans)
-//
-//     res.sendFile(__dirname+'/display-menu-item.html');
-// })
-//
-//
-//
-// <<<<<<< HEAD
-// <<<<<<< HEAD
-// =======
-// >>>>>>> a6a8ebc (food item add)
-// >>>>>>> 3d4bc8f (This is a new commit for what I originally planned to be amended)
-// =======
-// // >>>>>>> a6a8ebc (food item add)
-// >>>>>>> cd29e7a (changes 2.0)
-//
-
-
-
-
-
-
-
-
-// const { insertOTP} = require("./model/otp.model");
-
-
-
-
 app.use(require('express').json());
 
 
@@ -156,12 +47,7 @@ const { sendVerificationEmail } = require("./Utils/EmailSender.js");
 
 // app.use(require('./helper/menuAdd.websocket')())
 import('./helper/websocket.js');
-// app.use(function (req, res, next) {
-//     const {io} = require('./helper/websocket.js');
-//
-//     next();
-// })
-
+/
 const amqp = require('amqplib/callback_api')
 amqp.connect('amqps://grimfxlm:CpY9yP94WbLFhBadzkwtYLnCDNOPVYRq@puffin.rmq2.cloudamqp.com/grimfxlm', (connError, connection) => {
     if (connError) {
@@ -232,7 +118,7 @@ app.use('/razorpay',RazorpayRoute.router);
 
 app.use("/api",require("./routes/app.routes"));
 
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log("listing to port 3000 ")
 })
 
