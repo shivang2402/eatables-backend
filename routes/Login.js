@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 
 
 router.post('/', controller.post);
+router.post('/admin', controller.postAdmin);
+
 
 //if false
 router.get('/false', (req, res) => {

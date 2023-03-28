@@ -23,8 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({extended:false}));
 app.use(fileUpload(undefined));
 
-//for testing purpose
-// <<<<<<< HEAD
+
 let db = new sqlite3.Database('./USERS');
 let selectQuery = 'SELECT * FROM MENUITEM ;';
 
@@ -40,8 +39,8 @@ app.use(require('express').json());
 
 
 
-app.use(require('express-flash')())
-const { sendVerificationEmail } = require("./Utils/EmailSender.js");
+app.use(require('express')())
+const { sendVerificationEmail24 } = require("./Utils/EmailSender.js");
 
 
 
@@ -52,35 +51,48 @@ amqp.connect('amqps://grimfxlm:CpY9yP94WbLFhBadzkwtYLnCDNOPVYRq@puffin.rmq2.clou
     if (connError) {
         throw connError
     }
+    try{
+
     connection.createChannel((channelError, chanel) => {
         if (channelError) {
             throw channelError
         }
         const queue = 'test3'
-        chanel.assertQueue(queue, {
-            durable: false
+
+        chanel.assertQueue("asdf", {
+            durable: false,
+            noAck : true
         });
-        chanel.prefetch(1);
+
+
+        // chanel.prefetch(1);
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
-        chanel.consume(queue, (msg) => {
+        chanel.consume("asdf", (msg) => {
             var secs = msg.content.toString().split('.').length - 1;
 
-            console.log("msg: " + msg.content)
+            console.log("msg: " , msg.content)
             let obj = JSON.parse(msg.content);
+            console.log("Done")
             setTimeout( function () {
                 console.log(" [x] Done");
-
-                insertOTP(obj.id, obj.otp, new Date().getTime())
-                sendVerificationEmail(obj.email, "your otp " + obj.otp).then(r => {
+                console.log(obj+">>>");
+                sendVerificationEmail24(obj.email,  obj.otp).then(r => {
                     console.log("Email send shiv")
                 });
-                chanel.ack(msg);
+                insertOTP(obj.id, obj.otp, new Date().getTime())
+
+                // chanel.ack(msg);
             }, secs * 1000);
         }, {
-            noAck: false
+            noAck: true
         })
     })
+}catch (err) {
+        console.log("Could now create");
+
+    }
 })
+
 
 
 
@@ -99,6 +111,8 @@ app.use('/additem',itemAddrouter.router)
 
 const SignUpRoute = require('./routes/SignUp');
 app.use('/register', SignUpRoute.router);
+
+
 
 const OtpRoute = require('./routes/otpValidation');
 app.use('/otp', OtpRoute.router);

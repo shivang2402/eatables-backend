@@ -38,19 +38,22 @@ const validateOTP = async (otp) => {
         filename: './USERS',
         driver: sqlite3.Database
     })
-    const result = await db.get("select * from OTP where OTP=? and EXPIRES_AT>?;", [otp, new Date().getTime()])
-    // console.log("result s")
-    // console.log(result)
+    console.log(otp)
+    const result = await db.get("select * from OTP where OTP=? ;", [otp])
+
+    // const result = await db.get("select * from OTP where OTP=? and EXPIRES_AT>?;", [otp, new Date().getTime()])
+    console.log("result >> ")
+    console.log(result)
     if (result !== undefined && result.OTP === otp.toString()) {
         res = true;
-        // console.log("res " + res + " " + l1)
+        console.log("res " + res + " " + l1)
         await db.all("update USERS set IS_VERIFIED=true where STUDENT_ID=? ",[result.STUDENT_ID])
-        const dr = await db.all("delete from OTP where OTP=?", [otp]);
+        // const dr = await db.all("delete from OTP where OTP=?", [otp]);
         // console.log("dr" + dr)
         return true
     }
     await db.close();
-    // console.log("res " + res + " " + l1)
+    console.log("res " + res + " " + l1)
     return false
 }
 // const validateOTP = function (otp) {
@@ -63,6 +66,9 @@ const validateOTP = async (otp) => {
 const insertOTP = function (id, otp, timeC) {
     const db = new sqlite3.Database("./USERS")
     let boolEmail = false;
+    console.log("=-=-=-=-=-=-=-")
+    console.log(otp);
+
 
     db.all("select * from OTP where STUDENT_ID=?", [id], (err, rows) => {
         // console.log("O'tp")
@@ -88,7 +94,7 @@ const insertOTP = function (id, otp, timeC) {
 
             })
 
-            deleteOTP(otp);
+            // deleteOTP(otp);
         }
     })
     // console.log("boolEmail otp "+boolEmail);

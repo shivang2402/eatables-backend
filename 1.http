@@ -40,12 +40,13 @@ Content-Type: application/x-www-form-urlencoded
 
 otp=6989
 ###
-POST http://localhost:3000/register/
+POST https://eatables-backend-production.up.railway.app/register/
 Content-Type: application/json
 
 {
   "name":"artCR",
   "email":"namanrajani16@gmail.com",
+
   "password":"12345678900",
   "number": "9876543210"
 }

@@ -5,7 +5,9 @@ const showUserNotify=async (email) => {
     let db = await sqlite.open({
         filename: './USERS', driver: sqlite3.Database
     });
-    let sql = "SELECT * FROM orders where deliverId=? ;";
+    console.log([email]);
+    console.log("madarchod")
+    let sql = "SELECT * FROM orders where customerEmail=?;";
     let values = {};
 
     const rows = await db.all(sql,[email]);

@@ -1,15 +1,25 @@
 const {validateOTP} = require("../model/otp.model");
-const post = function (req, res) {
+const post = async function (req, res) {
     var otp = req.body;
     let bool = false;
-   validateOTP(otp.otp).then((b)=>bool=b);
+    console.log("dddddddddddddddddddddddddd");
+    console.log(otp);
+    console.log("dddddddddddddddddddddddddd");
 
-    setTimeout(()=>{
+    bool = await validateOTP(otp.otp);
+    console.log("dddddddddddddddddddddddddd");
+
+    console.log(bool);
+    console.log("dddddddddddddddddddddddddd");
+
+
+    setTimeout(() => {
         if (bool) {
             res.send("true");
-        } else{
-            res.send("false");}
-    },100)
+        } else {
+            res.send("false");
+        }
+    }, 100)
 
 }
 const get = function (req, res) {
